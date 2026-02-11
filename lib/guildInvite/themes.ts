@@ -1,20 +1,21 @@
+type SvgColor = `#${string}` | `rgb(${string})` | `rgba(${string})` | string;
 export const InviteThemeKeys = ['light', 'dark', 'ash', 'onyx'] as const;
 export type InviteThemes = typeof InviteThemeKeys[number];
 
 export interface Theme {
-  background: string;
-  stroke: string;
-  iconBackground: string;
-  acronymBackground: string;
-  textPrimary: string;
-  textSecondary: string;
-  onlineDot: string;
-  memberDot: string;
-  tagBackground: string;
-  tagStroke: string;
-  buttonBackground: string;
-  buttonStroke: string;
-  buttonText: string;
+  background: SvgColor;
+  stroke: SvgColor;
+  iconBackground: SvgColor;
+  acronymBackground: SvgColor;
+  textPrimary: SvgColor;
+  textSecondary: SvgColor;
+  onlineDot: SvgColor;
+  memberDot: SvgColor;
+  tagBackground: SvgColor;
+  tagStroke: SvgColor;
+  buttonBackground: SvgColor;
+  buttonStroke: SvgColor;
+  buttonText: SvgColor;
 }
 
 export const Themes: Record<InviteThemes, Theme> = {

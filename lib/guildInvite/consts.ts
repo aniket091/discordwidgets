@@ -8,7 +8,7 @@ export const FeatureBadgePaths = {
 } as const;
 
 export const FeatureBadgeGradient = `
-<linearGradient id="FeatureBadgeGradient" x1="18.0715" y1="17.5684" x2="-0.417492" y2="0.137123" gradientUnits="userSpaceOnUse">
+<linearGradient id="feature-badge-gradient" x1="18.0715" y1="17.5684" x2="-0.417492" y2="0.137123" gradientUnits="userSpaceOnUse">
   <stop stop-color="#E090A9"/>
   <stop offset="1" stop-color="#C37CDC"/>
 </linearGradient>`;

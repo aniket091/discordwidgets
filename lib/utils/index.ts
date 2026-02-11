@@ -1,6 +1,6 @@
-export * from "./text";
-
+const brackets = new Set(["[", "(", "{"]);
 const acronymRegex = /\[[^\]]+\]|\([^\)]+\)|\{[^\}]+\}|\w+/g;
+
 export function getAcronym(name: string | undefined) {
   if (!name) return "";
   const parts = name.match(acronymRegex);
@@ -11,7 +11,7 @@ export function getAcronym(name: string | undefined) {
     if (acronym.length >= 4) break;
     const firstChar = part[0];
 
-    if (["[", "(", "{"].includes(firstChar)) {
+    if (brackets.has(firstChar)) {
       if (part.length > 2) {
         acronym += `${firstChar}${part[1]}${part[part.length - 1]}`;
       }
@@ -19,19 +19,7 @@ export function getAcronym(name: string | undefined) {
       acronym += firstChar;
     }
   }
-
   return acronym;
-}
-
-export async function fetchAsBuffer(url: string | URL): Promise<ArrayBuffer | null> {
-  try {
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    return await res.arrayBuffer();
-  } catch (e) {
-    console.error(`Failed to fetch asset: ${url}`, e);
-    return null;
-  }
 }
 
 export function getCreationDate(snowflake?: string | null) {
@@ -50,10 +38,29 @@ export function formatNumber(num: number | undefined | null) {
   return num.toLocaleString("en-US");
 }
 
-export function toB64(buffer: ArrayBuffer | null) {
-  return buffer ? `data:image/png;base64,${Buffer.from(buffer).toString("base64")}` : null;
+async function fetchAsBuffer(url: string | URL): Promise<{ buffer: ArrayBuffer; mime: string; } | null> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+
+  try {
+    const res = await fetch(url, { signal: controller.signal });
+    if (!res.ok) return null;
+    const mime = res.headers.get("content-type") || "image/png";
+    const buffer = await res.arrayBuffer();
+    return { buffer, mime };
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
-export function safeFetchImage(url: string | null) {
-  return url ? fetchAsBuffer(url).then(toB64).catch(() => null) : Promise.resolve(null);
+function toB64(data: { buffer: ArrayBuffer; mime: string; }) {
+  if (!data) return null;
+  return `data:${data.mime};base64,${Buffer.from(data.buffer).toString("base64")}`;
+}
+
+export async function safeFetchImage(url: string | null) {
+  if (!url) return null;
+  return await fetchAsBuffer(url).then(result => result ? toB64(result) : null);
 }

@@ -1,10 +1,7 @@
-import { APIGuildWidget, APIInvite, APIInviteGuild, GuildFeature, RouteBases } from "discord-api-types/v10";
+import { APIGuildWidget, APIInvite, GuildFeature, RouteBases } from "discord-api-types/v10";
 
 // Not documented yet, but present in the api response
 export interface NewAPIInvite extends APIInvite {
-  guild?: APIInviteGuild & {
-    premium_tier: number;
-  }
   profile?: {
     id: string;
     name: string;
@@ -13,15 +10,15 @@ export interface NewAPIInvite extends APIInvite {
     online_count: number;
     description: string | null;
     banner_hash: string | null;
-    brand_color_primary: string | undefined;
+    brand_color_primary?: string | null;
     game_application_ids: string[];
-    game_activity: object;
+    game_activity: Record<string, unknown>;
     tag: string | null;
     badge: number;
     badge_color_primary: string;
     badge_color_secondary: string;
     badge_hash: string | null;
-    traits: object[];
+    traits: Record<string, unknown>[];
     features: GuildFeature[];
     visibility: number;
     custom_banner_hash: string | null;
@@ -41,7 +38,39 @@ export interface ResolvedGuildInvite {
 
 
 const snowflakeRegex = /^\d{17,20}$/;
-const inviteRegex = /(?:https?:\/\/)?(?:www\.)?(?:discord\.gg\/|discord(?:app)?\.com\/invite\/)?([a-zA-Z0-9-]{2,255})/i;
+const inviteRegex = /^(?:https?:\/\/)?(?:www\.)?(?:discord\.gg\/|discord(?:app)?\.com\/invite\/)?([a-zA-Z0-9-]{2,255})$/i;
+
+async function fetchGuildInvite(code: string): Promise<NewAPIInvite | null> {
+  const result = await fetch(`${RouteBases.api}/invites/${code}?with_counts=true`, { next: { revalidate: 120 } });
+  if (!result.ok) return null;
+  try {
+    return await result.json();
+  } catch {
+    return null;
+  }
+}
+
+async function fetchGuildWidget(guildId: string): Promise<APIGuildWidget | null> {
+  const result = await fetch(`${RouteBases.api}/guilds/${guildId}/widget.json`, { next: { revalidate: 120 } });
+  if (!result.ok) return null;
+  try {
+    return await result.json();
+  } catch {
+    return null;
+  }
+}
+
+function guildIconUrl(guildId: string, hash?: string | null, animate: boolean = true): string | null {
+  return hash ? `${RouteBases.cdn}/icons/${guildId}/${hash}${animate && hash.startsWith("a_") ? ".gif" : ".png"}?size=128` : null;
+}
+
+function guildBannerUrl(guildId: string, hash?: string | null, animate: boolean = true): string | null {
+  return hash ? `${RouteBases.cdn}/banners/${guildId}/${hash}${animate && hash.startsWith("a_") ? ".gif" : ".png"}?size=480` : null;
+}
+
+function guildClanBadgeUrl(guildId: string, hash?: string | null): string | null {
+  return hash ? `${RouteBases.cdn}/clan-badges/${guildId}/${hash}.png` : null;
+}
 
 export async function resolveGuildInvite(query: string, animate: boolean = true): Promise<ResolvedGuildInvite | null> {
   let inviteUrl = query;
@@ -52,40 +81,20 @@ export async function resolveGuildInvite(query: string, animate: boolean = true)
     if (match) inviteUrl = match[0];
   }
 
-  const inviteMatch = inviteUrl.match(inviteRegex);
-  const code = inviteMatch ? inviteMatch[1] : null;
+  const code = inviteUrl.match(inviteRegex)?.[1];
   if (!code) return null;
-  const apiInvite = await fetchGuildInvite(code);
 
-  return apiInvite ? {
+  const apiInvite = await fetchGuildInvite(code);
+  if (!apiInvite) return null;
+
+  const guild = apiInvite.guild;
+  const profile = apiInvite.profile;
+  return {
     invite: apiInvite,
     urls: {
-      icon: apiInvite.guild ? guildIconUrl(apiInvite.guild.id, apiInvite.guild.icon, animate) : null,
-      banner: apiInvite.guild ? guildBannerUrl(apiInvite.guild.id, apiInvite.guild.banner, animate) : null,
-      clanBadge: apiInvite.guild && apiInvite.profile ? guildClanBadgeUrl(apiInvite.guild.id, apiInvite.profile.badge_hash) : null,
+      icon: guild ? guildIconUrl(guild.id, guild.icon, animate) : null,
+      banner: guild ? guildBannerUrl(guild.id, guild.banner, animate) : null,
+      clanBadge: guild && profile ? guildClanBadgeUrl(guild.id, profile.badge_hash) : null,
     }
-  } : null;
-}
-
-
-async function fetchGuildInvite(code: string): Promise<NewAPIInvite | null> {
-  const result = await fetch(`${RouteBases.api}/invites/${code}?with_counts=true`);
-  return result.ok ? result.json() : null;
-}
-
-async function fetchGuildWidget(guildId: string): Promise<APIGuildWidget | null> {
-  const result = await fetch(`${RouteBases.api}/guilds/${guildId}/widget.json`);
-  return result.ok ? result.json() : null;
-}
-
-function guildIconUrl(guildId: string, hash?: string | null, animate: boolean = true) {
-  return hash ? `${RouteBases.cdn}/icons/${guildId}/${hash}${animate && hash.startsWith("a_") ? ".gif" : ".png"}?size=128` : null;
-}
-
-function guildBannerUrl(guildId: string, hash?: string | null, animate: boolean = true) {
-  return hash ? `${RouteBases.cdn}/banners/${guildId}/${hash}${animate && hash.startsWith("a_") ? ".gif" : ".png"}?size=480` : null;
-}
-
-function guildClanBadgeUrl(guildId: string, hash?: string | null) {
-  return hash ? `${RouteBases.cdn}/clan-badges/${guildId}/${hash}.png` : null;
+  };
 }

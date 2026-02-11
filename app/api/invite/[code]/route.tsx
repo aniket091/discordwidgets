@@ -19,18 +19,19 @@ export async function GET(req: NextRequest, props: Props) {
     const searchParams = req.nextUrl.searchParams;
     const themeParam = searchParams.get("theme")?.toLowerCase();
     const animate = searchParams.get("animate")?.toLowerCase() !== "false";
+    const showTag = searchParams.get("tag")?.toLowerCase() !== "false";
+
     const theme = (InviteThemeKeys as readonly string[]).includes(themeParam || "")  ? (themeParam as InviteThemes) : "dark";
-    
     const invite = await resolveGuildInvite(code, animate);
-    if (!invite) {
+    if (!invite || !invite?.invite?.guild) {
       return new Response("Invite not found", { status: 404 });
     }
 
-    const svg = await GuildInvite(invite, { theme: theme });
+    const svg = await GuildInvite(invite, { theme: theme, showTag: showTag });
     return new Response(svg, {
       headers: {
         "Content-Type": "image/svg+xml",
-        "Cache-Control": "public, max-age=120, s-maxage=600, stale-while-revalidate=600",
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
       }
     });
   } catch (error) {

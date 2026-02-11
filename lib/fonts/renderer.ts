@@ -4,7 +4,7 @@ interface TextOptions {
   x: number;
   y: number;
   fontSize: number;
-  color: string;
+  color: `#${string}` | `rgb(${string})` | `rgba(${string})` | string;
   textAnchor?: "start" | "middle" | "end";
   dominantBaseline?: "alphabetic" | "middle" | "hanging" | "ideographic";
 }
@@ -18,23 +18,22 @@ interface MultilineOptions extends TextOptions {
 export interface FontRenderer {
   measure: (text: string, fontSize: number) => number;
   render: (text: string, options: TextOptions) => string;
-  renderMultiline: (text: string, options: MultilineOptions) => { pathData: string; wasTruncated: boolean };
+  renderMultiline: (text: string, options: MultilineOptions) => { pathData: string; wasTruncated: boolean; lineCount: number; };
 }
 
-export function createFontRenderer(fontBuffer: ArrayBuffer|Buffer): FontRenderer {
-  if (Buffer.isBuffer(fontBuffer)) {
-    fontBuffer = toArrayBuffer(fontBuffer);
-  }
 
+export function createFontRenderer(buffer: Buffer): FontRenderer {
+  const arrayBuffer = toArrayBuffer(buffer);
   let font: Font;
+
   try {
-    font = parse(fontBuffer);
+    font = parse(arrayBuffer);
   } catch (e) {
     console.error("Failed to parse font", e);
     return {
       measure: () => 0,
       render: () => "",
-      renderMultiline: () => ({ pathData: "", wasTruncated: false })
+      renderMultiline: () => ({ pathData: "", wasTruncated: false, lineCount: 0 })
     };
   }
 
@@ -72,9 +71,9 @@ export function createFontRenderer(fontBuffer: ArrayBuffer|Buffer): FontRenderer
     },
 
     renderMultiline: (text: string, options: MultilineOptions) => {
-      if (!text) return { pathData: "", wasTruncated: false };
+      if (!text) return { pathData: "", wasTruncated: false, lineCount: 0 };
 
-      const words = text.split(" ");
+      const words = text.trim().split(/\s+/);
       let lines: string[] = [];
       let currentLine = words[0] || "";
 
@@ -96,7 +95,7 @@ export function createFontRenderer(fontBuffer: ArrayBuffer|Buffer): FontRenderer
               if(font.getAdvanceWidth(tempSegment + char, options.fontSize) <= options.maxWidth) {
                 tempSegment += char;
               } else {
-                lines.push(tempSegment);
+                if (tempSegment) lines.push(tempSegment);
                 tempSegment = char;
               }
             }
@@ -121,7 +120,7 @@ export function createFontRenderer(fontBuffer: ArrayBuffer|Buffer): FontRenderer
         return `<path d="${path.toPathData(2)}" fill="${options.color}" />`;
       }).join("");
 
-      return { pathData, wasTruncated };
+      return { pathData, wasTruncated, lineCount: lines.length };
     }
   };
 }

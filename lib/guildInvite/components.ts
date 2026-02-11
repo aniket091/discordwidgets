@@ -28,7 +28,7 @@ export function FeatureBadge({ guild, badgeX, theme = "dark" }: FeatureBadgeOpti
   else if (guild.features.includes(GuildFeature.Discoverable) || guild.features.includes(GuildFeature.Community)) {
     const icon = guild.features.includes(GuildFeature.Discoverable) ? consts.FeatureBadgePaths.discovery : consts.FeatureBadgePaths.community;
     const isBoosted = (guild.premium_subscription_count || 0) > 0;
-    const backColor = isBoosted ? "url(#FeatureBadgeGradient)" : (theme === "light" ? "#fff" : "#4E5058");
+    const backColor = isBoosted ? "url(#feature-badge-gradient)" : (theme === "light" ? "#fff" : "#4E5058");
     const iconColor = isBoosted ? "#fff" : (theme === "light" ? "#4E5058" : "#fff");
 
     return (`
@@ -41,19 +41,4 @@ export function FeatureBadge({ guild, badgeX, theme = "dark" }: FeatureBadgeOpti
   }
 
   return "";
-}
-
-export function BannerGradient(color: keyof typeof consts.BannerGradients) {
-  const gradient = consts.BannerGradients[color] || consts.BannerGradients["default"];
-  return (`
-    <radialGradient id="BannerGradient" cx="0.501" cy="1.2705" r="1.0543" fx="0.501" fy="1.2705">
-      <stop offset="0.2065" stop-color="${gradient.color1}" />
-      <stop offset="0.8516" stop-color="${gradient.color2}" />
-    </radialGradient>
-  `);
-}
-
-export function GuildBanner(banner: string | null) {
-  if (banner) return `<image x="1" y="1" width="300" height="72" preserveAspectRatio="xMidYMid slice" href="${banner}" clip-path="url(#clip-banner)" />`;
-  return `<rect x="1" y="1" width="300" height="72" fill="url(#BannerGradient)" clip-path="url(#clip-banner)" />`;
 }
