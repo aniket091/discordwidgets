@@ -17,17 +17,18 @@ export async function GET(req: NextRequest, props: Props) {
     }
 
     const searchParams = req.nextUrl.searchParams;
-    const themeParam = searchParams.get("theme")?.toLowerCase();
+    const tag = searchParams.get("tag")?.toLowerCase() !== "false";
     const animate = searchParams.get("animate")?.toLowerCase() !== "false";
-    const showTag = searchParams.get("tag")?.toLowerCase() !== "false";
 
+    const themeParam = searchParams.get("theme")?.toLowerCase();
     const theme = (InviteThemeKeys as readonly string[]).includes(themeParam || "")  ? (themeParam as InviteThemes) : "dark";
+    
     const invite = await resolveGuildInvite(code, animate);
     if (!invite || !invite?.invite?.guild) {
       return new Response("Invite not found", { status: 404 });
     }
 
-    const svg = await GuildInvite(invite, { theme: theme, showTag: showTag });
+    const svg = await GuildInvite(invite, { theme: theme, tag: tag });
     return new Response(svg, {
       headers: {
         "Content-Type": "image/svg+xml",
