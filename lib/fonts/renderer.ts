@@ -4,7 +4,7 @@ interface TextOptions {
   x: number;
   y: number;
   fontSize: number;
-  color: `#${string}` | `rgb(${string})` | `rgba(${string})` | string;
+  fill: `#${string}` | `rgb(${string})` | `rgba(${string})` | string;
   textAnchor?: "start" | "middle" | "end";
   dominantBaseline?: "alphabetic" | "middle" | "hanging" | "ideographic";
 }
@@ -33,7 +33,7 @@ export function createFontRenderer(buffer: Buffer): FontRenderer {
     return {
       measure: () => 0,
       render: () => "",
-      renderMultiline: () => ({ pathData: "", wasTruncated: false, lineCount: 0 })
+      renderMultiline: () => ({ pathData: "", wasTruncated: false, lineCount: 0 }),
     };
   }
 
@@ -47,7 +47,7 @@ export function createFontRenderer(buffer: Buffer): FontRenderer {
       if (!text) return "";
       
       let { x, y } = options;
-      const { fontSize, color } = options;
+      const { fontSize, fill } = options;
       const scale = fontSize / font.unitsPerEm;
       const textAnchor = options.textAnchor ?? "start";
       const dominantBaseline = options.dominantBaseline ?? "alphabetic";
@@ -67,7 +67,7 @@ export function createFontRenderer(buffer: Buffer): FontRenderer {
       }
 
       const path = font.getPath(text, x, y, fontSize);
-      return `<path d="${path.toPathData(2)}" fill="${color}" />`;
+      return `<path d="${path.toPathData(2)}" fill="${fill}" />`;
     },
 
     renderMultiline: (text: string, options: MultilineOptions) => {
@@ -117,7 +117,7 @@ export function createFontRenderer(buffer: Buffer): FontRenderer {
       const pathData = lines.map((line, index) => {
         const lineY = options.y + (index * options.lineHeight) + options.fontSize - 3; 
         const path = font.getPath(line, options.x, lineY, options.fontSize);
-        return `<path d="${path.toPathData(2)}" fill="${options.color}" />`;
+        return `<path d="${path.toPathData(2)}" fill="${options.fill}" />`;
       }).join("");
 
       return { pathData, wasTruncated, lineCount: lines.length };

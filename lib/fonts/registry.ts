@@ -2,27 +2,42 @@ import { createFontRenderer, FontRenderer } from "./renderer";
 import path from "path";
 import fs from "fs";
 
-interface FontMap {
+type FontFamily = "ggsans" | "whitney";
+interface FontSet {
   bold: FontRenderer;
   semibold: FontRenderer;
   medium: FontRenderer;
 }
 
-
-let fonts: FontMap | null = null;
-function loadFonts(): FontMap {
-  const fontDir = path.join(process.cwd(), "assets/fonts");
-  return {
-    bold: createFontRenderer(fs.readFileSync(path.join(fontDir, "ggsans-bold.ttf"))),
-    semibold: createFontRenderer(fs.readFileSync(path.join(fontDir, "ggsans-semibold.ttf"))),
-    medium: createFontRenderer(fs.readFileSync(path.join(fontDir, "ggsans-medium.ttf"))),
-  };
+const fontCache: Partial<Record<FontFamily, FontSet>> = {};
+function loadFont(file: string): FontRenderer {
+  const fontPath = path.join(process.cwd(), "assets/fonts", file);
+  const buffer = fs.readFileSync(fontPath);
+  return createFontRenderer(buffer);
 }
 
 
-export function getFonts(): FontMap {
-  if (!fonts) {
-    fonts = loadFonts();
+export function getFontFamily(family: FontFamily): FontSet {
+  if (fontCache[family]) return fontCache[family]!;
+
+  let fonts: FontSet;
+  switch(family) {
+    case "ggsans":
+      fonts = {
+        bold: loadFont("ggsans-bold.ttf"),
+        semibold: loadFont("ggsans-semibold.ttf"),
+        medium: loadFont("ggsans-medium.ttf"),
+      };
+      break;
+    case "whitney":
+      fonts = {
+        bold: loadFont("whitney-bold.ttf"),
+        semibold: loadFont("whitney-semibold.ttf"),
+        medium: loadFont("whitney-medium.ttf"),
+      };
+      break;
   }
+
+  fontCache[family] = fonts;
   return fonts;
 }
