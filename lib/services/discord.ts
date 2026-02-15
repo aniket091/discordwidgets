@@ -32,6 +32,7 @@ export interface ResolvedGuildInvite {
   urls: {
     icon: string | null;
     banner: string | null;
+    splash: string | null;
     clanBadge: string | null;
   }
 }
@@ -68,6 +69,10 @@ function guildBannerUrl(guildId: string, hash?: string | null, animate: boolean 
   return hash ? `${RouteBases.cdn}/banners/${guildId}/${hash}${animate && hash.startsWith("a_") ? ".gif" : ".png"}?size=480` : null;
 }
 
+function guildSplashUrl(guildId: string, hash?: string | null): string | null {
+  return hash ? `${RouteBases.cdn}/splashes/${guildId}/${hash}.png?size=480` : null;
+}
+
 function guildClanBadgeUrl(guildId: string, hash?: string | null): string | null {
   return hash ? `${RouteBases.cdn}/clan-badges/${guildId}/${hash}.png` : null;
 }
@@ -94,6 +99,7 @@ export async function resolveGuildInvite(query: string, animate: boolean = true)
     urls: {
       icon: guild ? guildIconUrl(guild.id, guild.icon, animate) : null,
       banner: guild ? guildBannerUrl(guild.id, guild.banner, animate) : null,
+      splash: guild ? guildSplashUrl(guild.id, guild.splash) : null,
       clanBadge: guild && profile ? guildClanBadgeUrl(guild.id, profile.badge_hash) : null,
     }
   };
