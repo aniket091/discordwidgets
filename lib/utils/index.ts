@@ -38,7 +38,7 @@ export function formatNumber(num: number | undefined | null) {
   return num.toLocaleString("en-US");
 }
 
-async function fetchAsBuffer(url: string | URL): Promise<{ buffer: ArrayBuffer; mime: string; } | null> {
+export async function fetchAsBuffer(url: string | URL): Promise<{ buffer: ArrayBuffer; mime: string; } | null> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 5000);
 
@@ -55,7 +55,7 @@ async function fetchAsBuffer(url: string | URL): Promise<{ buffer: ArrayBuffer; 
   }
 }
 
-function toB64(data: { buffer: ArrayBuffer; mime: string; }) {
+export function toB64(data: { buffer: ArrayBuffer; mime: string; }) {
   if (!data) return null;
   return `data:${data.mime};base64,${Buffer.from(data.buffer).toString("base64")}`;
 }

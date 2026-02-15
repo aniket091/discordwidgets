@@ -1,5 +1,5 @@
 import { safeFetchImage, getAcronym, formatNumber, getCreationDate } from "../utils";
-import { ResolvedGuildInvite } from "../services/discord";
+import { ResolvedGuildInvite } from "../services/invite";
 import { getFontFamily } from "../fonts/registry";
 import { FeatureBadge } from "./components";
 import * as C from "./consts";
@@ -7,7 +7,7 @@ import * as C from "./consts";
 
 interface Options {
   theme: C.InviteThemes;
-  tag?: boolean;
+  hideTag?: boolean;
 }
 
 export default async function GuildInvite(data: ResolvedGuildInvite, options: Options) {
@@ -100,7 +100,7 @@ export default async function GuildInvite(data: ResolvedGuildInvite, options: Op
         ? `<image x="1" y="1" width="${C.CARD_WIDTH - 2}" height="${C.BANNER_HEIGHT}" href="${banner}" preserveAspectRatio="xMidYMid slice" clip-path="url(#banner-clip)" />`
         : `<rect x="1" y="1" width="${C.CARD_WIDTH - 2}" height="${C.BANNER_HEIGHT}" fill="url(#banner-gradient)" clip-path="url(#banner-clip)" />`
       }
-      ${options.tag === false ? "" : tagBlock}
+      ${options.hideTag === true ? "" : tagBlock}
 
       <rect x="${START_X}" y="${C.ICON_STROKE_START_Y}" width="${C.ICON_SIZE + C.ICON_STROKE * 2}" height="${C.ICON_SIZE + C.ICON_STROKE * 2}" rx="20" fill="${theme.iconStroke}"/>
       ${icon 
