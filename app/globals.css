@@ -1,26 +1,142 @@
 @import "tailwindcss";
 
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafafa; /* Zinc-50 */
+  --foreground: #09090b; /* Zinc-950 */
+
+  --card: #ffffff;
+  --card-foreground: #09090b;
+
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+
+  --primary: #5865F2;
+  --primary-foreground: #ffffff;
+
+  --muted: #f4f4f5; /* Zinc-100 */
+  --muted-foreground: #71717a; /* Zinc-500 */
+
+  --accent: #f4f4f5; /* Zinc-100 */
+  --accent-foreground: #18181b; /* Zinc-900 */
+
+  --border: #e4e4e7; /* Zinc-200 */
+  --border-hover: #d4d4d8; /* Zinc-300 */
+  --hover-layer: rgba(0, 0, 0, 0.05); /* Black 5% */
+
+  --navbar: rgba(255, 255, 255, 0.8);
+  --navbar-foreground: #09090b;
+  --navbar-border: rgba(0, 0, 0, 0.05);
+
+  --ring: #5865F2;
+  --input: #e4e4e7;
+  --radius: 0.75rem;
 }
 
-@theme inline {
+
+.dark {
+  --background: #09090b; /* Zinc-950 */
+  --foreground: #fafafa; /* Zinc-50 */
+
+  --card: #121214; /* Zinc-900 */
+  --card-foreground: #fafafa; /* Zinc-50 */
+
+  --popover: #121214; /* Zinc-900 */
+  --popover-foreground: #fafafa; /* Zinc-50 */
+
+  --primary: #5865F2; 
+  --primary-foreground: #ffffff;
+
+  --muted: #27272a; /* Zinc-800 */
+  --muted-foreground: #a1a1aa; /* Zinc-400 */
+
+  --accent: #27272a; /* Zinc-800 */
+  --accent-foreground: #fafafa; /* Zinc-50 */
+
+  --border: #27272a; /* Zinc-800 */
+  --border-hover: #3f3f46; /* Zinc-700 */
+  --hover-layer: rgba(255, 255, 255, 0.05); /* White 5% */
+
+  --navbar: rgba(9, 9, 11, 0.8);
+  --navbar-foreground: #fafafa;
+  --navbar-border: rgba(255, 255, 255, 0.08);
+
+  --input: #27272a;
+  --ring: #5865F2;
+}
+
+
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-border: var(--border);
+  --color-border-hover: var(--border-hover);
+  --color-hover-layer: var(--hover-layer);
+
+  --color-navbar: var(--navbar);
+  --color-navbar-foreground: var(--navbar-foreground);
+  --color-navbar-border: var(--navbar-border);
+
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer utilities {
+  ::-webkit-scrollbar {
+    width: 14px; 
+    height: 14px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--accent);
+    border-radius: 9999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+    transition: background-color 0.2s;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--muted-foreground);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) transparent;
   }
 }
 
+
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
