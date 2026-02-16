@@ -43,6 +43,7 @@ export default async function LegacyInvite(data: ResolvedGuildInvite, options: O
 
   return (`
     <svg width="${CARD_WIDTH}" height="${CARD_HEIGHT}" viewBox="0 0 ${CARD_WIDTH} ${CARD_HEIGHT}" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <title>${guild.name}</title>
       <defs>
         <clipPath id="icon-clip"><rect x="${START_X}" y="${CONTENT_START_Y}" width="${C.ICON_SIZE}" height="${C.ICON_SIZE}" rx="16" /></clipPath>
         <clipPath id="banner-clip"><path d="M0 4C0 1.79086 1.79086 0 4 0H426C428.209 0 430 1.79086 430 4V60H0V4Z" /></clipPath>

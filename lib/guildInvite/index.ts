@@ -75,6 +75,7 @@ export default async function GuildInvite(data: ResolvedGuildInvite, options: Op
 
   return (`
     <svg width="${CARD_WIDTH}" height="${CARD_HEIGHT}" viewBox="0 0 ${CARD_WIDTH} ${CARD_HEIGHT}" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <title>${guild.name}</title>
       <defs>
         <clipPath id="icon-clip"><rect x="21" y="43" width="${C.ICON_SIZE}" height="${C.ICON_SIZE}" rx="18" /></clipPath>
         <clipPath id="banner-clip"><path d="M1 17C1 8.16344 8.16344 1 17 1H285C293.837 1 301 8.16344 301 17V73H1V17Z" /></clipPath>
