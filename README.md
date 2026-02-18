@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Discord Widgets
+**Create beautiful, customizable SVG invite cards for your websites, GitHub READMEs, and community forums.**
 
-## Getting Started
 
-First, run the development server:
+## ✨ Features
+- Supports current & legacy invites
+- Supports animated icons & banners
+- Optimized caching for performance
+- Easy to embed in GitHub READMEs & websites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+## 🎮 Playground
+**A live playground is available at:**
+
+[**https://discordwidgets.vercel.app/**](https://discordwidgets.vercel.app/)
+
+**Use it to:**
+- Preview widgets in real-time
+- Toggle animation and layout options
+- Generate ready-to-use embed URLs
+
+
+## 🌐 API Usage
+### Base Endpoint
+```http
+GET https://discordwidgets.vercel.app/widgets/invite/{invite_code|server_id}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Query Parameters
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#### Current Widget (`style=current` or default)
+| Param     | Values                          | Default   | Description                           |
+| --------- | ------------------------------- | --------- | ------------------------------------- |
+| `style`   | `current`                       | `current` | The layout style of the widget.       |
+| `theme`   | `dark`, `light`, `ash`, `onyx`  | `dark`    | The color theme of the widget.        |
+| `animate` | `true` \| `false`               | `true`    | Toggle animated icons & banners.      |
+| `hidetag` | `true` \| `false`               | `false`   | Hides the guild tag badge if present. |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```http
+GET /widgets/invite/{invite_code|server_id}?theme=dark&hidetag=false
+```
 
-## Learn More
+#### Legacy Widget (`style=legacy`)
+| Param       | Values           | Default | Description                               |
+| ----------- | ---------------- | ------- | ----------------------------------------- |
+| `style`     | `legacy`         | -       | The layout style of the widget.           |
+| `theme`     | `dark`, `light`  | `dark`  | The color theme of the widget.            |
+| `animate`   | `true` | `false` | `true`  | Toggle animated icons & banners.          |
+| `usebanner` | `true` | `false` | `true`  | Use guild banner instead of guild splash. |
 
-To learn more about Next.js, take a look at the following resources:
+```http
+GET /widgets/invite/{invite_code|server_id}?style=legacy&theme=dark&usebanner=true
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🪴 Preview
+### Current Widget
+| Dark Theme | Light Theme |
+| ---------- | ----------- |
+| ![Discord Invite](https://discordwidgets.vercel.app/widgets/invite/GaczkwfgV9?theme=dark) | ![Discord Invite](https://discordwidgets.vercel.app/widgets/invite/GaczkwfgV9?theme=light) |
 
-## Deploy on Vercel
+### Legacy Widget
+| Dark Theme | Light Theme |
+| ---------- | ----------- |
+| ![Discord Invite](https://discordwidgets.vercel.app/widgets/invite/GaczkwfgV9?style=legacy&theme=dark) | ![Discord Invite](https://discordwidgets.vercel.app/widgets/invite/GaczkwfgV9?style=legacy&theme=light) |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🚀 Local Development
+**Follow these steps to run the project locally.**
+
+### Prerequisites
+* Node.js 18+
+* npm or yarn
+
+### Installation
+1. **Clone the Repository**
+```bash
+git clone https://github.com/aniket091/discordwidgets.git
+cd discordwidgets
+```
+
+2. **Install Dependencies**
+```bash
+yarn install
+# or
+npm install
+```
+
+3. **Start Development Server**
+```bash
+yarn dev
+# or
+npm run dev
+```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+
+## 🤝 Contributing
+Contributions, issues and feature requests are welcome! <br>
+Check out the contributing guidelines before submitting a PR.
