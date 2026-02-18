@@ -40,8 +40,8 @@ export const Themes: Record<InviteThemes, Theme> = {
     buttonStroke: "#148F54",
     buttonBackground: "#008545",
     badge: {
-      flowerStar: "#FFFFFF",
-      icon: "#4E5058",
+      flowerStar: "#4E5058",
+      icon: "#FFFFFF",
     }
   },
   dark: {
