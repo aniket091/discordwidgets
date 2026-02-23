@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
       {
         source: '/widgets/invite/:path*',
         destination: '/api/invite/:path*',
-        permanent: true,
+        permanent: false,
       },
     ];
   }
