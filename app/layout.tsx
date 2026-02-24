@@ -1,7 +1,7 @@
-import type { Metadata, Viewport } from "next";
-import { Outfit } from "next/font/google";
 import { Providers } from "@/components/layout/Providers";
 import { Navbar } from "@/components/layout/Navbar";
+import type { Metadata, Viewport } from "next";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -24,13 +24,24 @@ export const metadata: Metadata = {
   keywords: ["Discord", "Discord Invite", "Server Invite Widget", "Discord Widgets"],
   authors: [{ name: "Aniket", url: "https://github.com/aniket091" }],
   creator: "Aniket",
-  twitter: {
-    card: "summary_large_image",
+  openGraph: {
     title: "Discord Widgets",
     description: "Create SVG Invite widgets inspired by the Discord Client UI.",
+    url: "https://discordwidgets.vercel.app",
+    siteName: "Discord Widgets",
+    images: [{ url: "/logo.png", width: 400, height: 400 }],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Discord Widgets",
+    description: "Create SVG Invite widgets inspired by the Discord Client UI.",
+    images: ["/logo.png"],
   },
   icons: {
-    icon: "/favicon.ico"
+    icon: "/favicon.ico",
+    apple: "/logo.png", 
   }
 };
 

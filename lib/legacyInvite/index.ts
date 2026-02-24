@@ -1,5 +1,5 @@
 import { formatNumber, getAcronym, safeFetchImage } from "../utils";
-import { ResolvedGuildInvite } from "../services/invite";
+import { ResolvedGuildInvite } from "../services/discord";
 import { getFontFamily } from "../fonts/registry";
 import { FeatureBadge } from "./components";
 import * as C from "./consts";

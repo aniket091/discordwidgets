@@ -41,6 +41,7 @@ export interface ResolvedGuildInvite {
 const snowflakeRegex = /^\d{17,20}$/;
 const inviteRegex = /^(?:https?:\/\/)?(?:www\.)?(?:discord\.gg\/|discord(?:app)?\.com\/invite\/)?([a-zA-Z0-9-]{2,255})$/i;
 
+
 async function fetchGuildInvite(code: string): Promise<NewAPIInvite | null> {
   const result = await fetch(`${RouteBases.api}/invites/${code}?with_counts=true`, { next: { revalidate: 120 } });
   if (!result.ok) return null;

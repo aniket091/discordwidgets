@@ -13,12 +13,7 @@ const nextConfig: NextConfig = {
         source: "/discord",
         destination: "https://discord.gg/GaczkwfgV9",
         permanent: true,
-      },
-      {
-        source: '/widgets/invite/:path*',
-        destination: '/api/invite/:path*',
-        permanent: false,
-      },
+      }
     ];
   }
 };

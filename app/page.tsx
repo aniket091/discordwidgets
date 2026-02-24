@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import {  Sparkles, Settings2, Check, Type, Layout, Image as ImageIcon, Palette, ClipboardList, Tag } from "lucide-react";
+import {  Sparkles, Settings2, Check, Type, Layout, Image as ImageIcon, Palette, ClipboardList, Tag, Link } from "lucide-react";
 
 // Components
 import { Skeleton } from "@/components/playground/Skeleton";
@@ -18,6 +18,7 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [code, setCode] = useState("discord-developers");
+  const [includeLink, setIncludeLink] = useState(true);
   const debouncedCode = useDebounce(code, 600);
 
   const [style, setStyle] = useState<"current" | "legacy">("current");
@@ -27,8 +28,9 @@ export default function Home() {
   const [useBanner, setUseBanner] = useState(true);
   useEffect(() => setMounted(true), []);
 
-  const apiUrl = useMemo(() => {
-    if (!mounted) return "";
+
+  const { apiUrl, previewUrl, inviteLink } = useMemo(() => {
+    if (!mounted) return { apiUrl: "", previewUrl: "", inviteLink: "" };
     const baseUrl = window.location.origin;
     const cleanCode = debouncedCode.trim() || "discord-developers";
     const params = new URLSearchParams();
@@ -43,9 +45,16 @@ export default function Home() {
       if (hideTag) params.set("hidetag", "true");
     }
 
-    return `${baseUrl}/widgets/invite/${cleanCode}?${params.toString()}`;
+    const apiUrl = `${baseUrl}/widgets/invite/${cleanCode}?${params.toString()}`;
+    const inviteLink = `https://discord.gg/${cleanCode}`;
+    
+    params.set('notrack', 'true');
+    const previewUrl = `${baseUrl}/widgets/invite/${cleanCode}?${params.toString()}`;
+    return { apiUrl: apiUrl, previewUrl: previewUrl, inviteLink: inviteLink };
+
   }, [mounted, debouncedCode, cardTheme, animate, style, useBanner, hideTag]);
   if (!mounted) return <Skeleton />;
+
 
   return (
     <div className="min-h-screen w-full bg-background text-foreground transition-colors duration-300 flex flex-col pt-16">
@@ -82,7 +91,7 @@ export default function Home() {
                         placeholder="discord-developers"
                       />
                       {code && isValid && (
-                        <Check className="text-emerald-500 ml-2 sm:mr-2 w-5 h-5 shrink-0 animate-in zoom-in" />
+                        <Check className="text-emerald-500 ml-2 sm:mr-2 md:mr-0 w-5 h-5 shrink-0 animate-in zoom-in" />
                       )}
                     </div>
                   </div>
@@ -120,6 +129,13 @@ export default function Home() {
                   <div className="space-y-3">
                     <Label icon={<Settings2 size={14} />}>Settings</Label>
                     <div className="grid grid-cols-1 gap-3">
+                      <ToggleCard
+                        label="Make Clickable"
+                        desc="Wrap the widget in a link to the invite"
+                        checked={includeLink}
+                        onChange={setIncludeLink}
+                        icon={<Link size={18} className="text-emerald-500" />}
+                      />
                       <ToggleCard
                         label="Animations"
                         desc="Enable animated icons & banners"
@@ -172,7 +188,7 @@ export default function Home() {
                   <div className="relative z-10 w-full flex justify-center">
                     <div className="group relative transition-transform duration-300 hover:scale-[1.01]">
                       <PreviewImage 
-                        src={apiUrl} 
+                        src={previewUrl} 
                         alt="Discord Invite Preview" 
                         hasCode={!!code.trim()}
                         onStatusChange={(status) => setIsValid(status)}
@@ -192,8 +208,22 @@ export default function Home() {
                 </div>
 
                 <div className="space-y-4">
-                  <SnippetBox label="Markdown" text={`![Invite](${apiUrl})`} />
-                  <SnippetBox label="HTML" text={`<img src="${apiUrl}" alt="Invite" />`} />
+                  <SnippetBox 
+                    label="Markdown" 
+                    text={
+                      includeLink 
+                        ? `[![Discord Invite](${apiUrl})](${inviteLink})`
+                        : `![Discord Invite](${apiUrl})`
+                    }
+                  />
+                  <SnippetBox 
+                    label="HTML" 
+                    text={
+                      includeLink
+                        ? `<a href="${inviteLink}">\n  <img src="${apiUrl}" alt="Discord Invite" />\n</a>`
+                        : `<img src="${apiUrl}" alt="Discord Invite" />`
+                    }
+                  />
                   <SnippetBox label="Direct Link" text={apiUrl} />
                 </div>
               </div>

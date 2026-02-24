@@ -1,6 +1,7 @@
 import { InviteThemeKeys as CurrentThemeKeys, InviteThemes as CurrentThemes } from "@/lib/guildInvite/consts";
 import { InviteThemeKeys as LegacyThemeKeys, InviteThemes as LegacyThemes } from "@/lib/legacyInvite/consts";
-import { resolveGuildInvite } from "@/lib/services/invite";
+import { resolveGuildInvite } from "@/lib/services/discord";
+import { redis } from "@/lib/services/redis";
 import { NextRequest } from "next/server";
 import GuildInvite from "@/lib/guildInvite";
 import LegacyInvite from "@/lib/legacyInvite";
@@ -18,15 +19,14 @@ export async function GET(req: NextRequest, props: Props) {
       return new Response("Missing invite code", { status: 400 });
     }
 
-    const searchParams = req.nextUrl.searchParams;
-    // shared params
-    const animate = getBool(searchParams.get("animate"), true);
-    const style = searchParams.get("style")?.toLowerCase() === "legacy" ? "legacy" : "current";
-    const themeName = searchParams.get("theme")?.toLowerCase();
-    // legacy params
-    const useBanner = getBool(searchParams.get("usebanner"), true);
-    // current params
-    const hideTag = getBool(searchParams.get("hidetag"), false);
+    const params = req.nextUrl.searchParams;
+    const notrack = getBool(params.get("notrack"), false);
+    const themeName = params.get("theme")?.toLowerCase();
+    const style = params.get("style")?.toLowerCase() === "legacy" ? "legacy" : "current";
+
+    const animate = getBool(params.get("animate"), true);
+    const useBanner = getBool(params.get("usebanner"), true);
+    const hideTag = getBool(params.get("hidetag"), false);
 
     
     const invite = await resolveGuildInvite(code, animate);
@@ -34,16 +34,22 @@ export async function GET(req: NextRequest, props: Props) {
       return new Response("Invite not found", { status: 404 });
     }
 
-
     let svg = "";
     if (style === "legacy") {
       const theme = (LegacyThemeKeys as readonly string[]).includes(themeName || "") ? (themeName as LegacyThemes) : "dark";
       svg = await LegacyInvite(invite, { theme, useBanner });
-    }
-    else {
+    } else {
       const theme = (CurrentThemeKeys as readonly string[]).includes(themeName || "") ? (themeName as CurrentThemes) : "dark";
       svg = await GuildInvite(invite, { theme, hideTag });
     }
+
+    if (!notrack) {
+      try {
+        redis.incr('widgets:created').catch(() => null);
+        redis.sadd('widgets:invites', invite.invite.code).catch(() => null);
+      } catch {};
+    }
+ 
 
     return new Response(svg, {
       headers: {
