@@ -1,4 +1,4 @@
-## Summary
+## PR Summary
 <!-- Briefly describe a summary of your changes and the motivation in this PR. -->
 
 ## Related Issue
@@ -8,9 +8,7 @@ Closes # (issue number)
 ## Type of Change
 - [ ] Bug fix
 - [ ] New feature
-- [ ] Performance improvement
 - [ ] Breaking Change
-- [ ] Refactor
 - [ ] UI/UX improvement
 - [ ] Other (please describe)
 
@@ -23,7 +21,6 @@ Closes # (issue number)
 - [ ] Linked relevant issue(s)
 - [ ] No breaking changes
 - [ ] Tested locally
-
 
 ## Additional Notes
 <!-- Anything else reviewers should know. -->

@@ -3,7 +3,7 @@ Thank you for your interest in contributing to **Discord Widgets**!
 We welcome bug fixes, performance improvements, documentation updates, and new widget features.
 
 
-## 🚀 Getting Started
+## 🌿 Getting Started
 
 ### 1. Fork & Clone the Repository
 ```bash
@@ -28,16 +28,16 @@ Then open:
 [http://localhost:3000](http://localhost:3000)
 
 
-## 🧩 Project Structure Overview
+## 🌿 Project Structure
 ```
-/app/api/invite/[code]       → API route for invite widgets
+/app/widgets/invite/[code]   → API route for invite widgets
 /lib/guildInvite             → Current widget renderer
 /lib/legacyInvite            → Legacy widget renderer
 /lib/services                → Invite resolving logic
 ```
 
 
-## 🛠 Development Guidelines
+## 🌿 Development Guidelines
 
 ### Code Style
 * Use **TypeScript**
@@ -51,9 +51,8 @@ Then open:
 * Theme keys should match URL params exactly
 
 
-## 🎨 SVG Rendering Rules
+## 🌿 SVG Rendering Rules
 Since this project dynamically generates SVG:
-
 * Ensure SVG renders correctly in:
   * Browsers
   * GitHub READMEs
@@ -63,7 +62,7 @@ Since this project dynamically generates SVG:
 * Verify both `current` and `legacy` styles render properly
 
 
-## 🧪 Testing Your Changes
+## 🌿 Testing Your Changes
 Before opening a PR, test using:
 ```
 /widgets/invite/{code}?theme=dark
@@ -74,7 +73,7 @@ Also verify:
 * All settings work correctly
 
 
-## 🐛 Reporting Bugs
+## 🌿 Reporting Bugs
 When reporting a bug, include:
 * Invite code used
 * Full widget URL
@@ -82,7 +81,7 @@ When reporting a bug, include:
 * Screenshot (if applicable)
 
 
-## 💡 Suggesting Features
+## 🌿 Suggesting Features
 When proposing a feature:
 * Explain the problem it solves
 * Keep scope focused and reasonable
@@ -90,23 +89,22 @@ When proposing a feature:
 * Mention whether it affects current, legacy, or both widgets
 
 
-## 🔀 Pull Request Process
+## 🌿 Pull Request Process
 1. Create a new branch:
   ```bash
   git checkout -b feature/your-feature-name
   ```
-
 2. Make your changes
 3. Test locally using the playground + API routes
 4. Open a Pull Request
 
 
-## 🤝 Code of Conduct
+## 🌿 Code of Conduct
 Please be respectful and constructive in discussions. <br>
 We aim to maintain a friendly and professional environment for all contributors.
 
 
-## ❓ Questions
+## 🌿 Questions
 If you're unsure about something or need guidance, <br>
 use **GitHub Discussions** instead of opening an issue: <br>
 [https://github.com/aniket091/discordwidgets/discussions](https://github.com/aniket091/discordwidgets/discussions)
